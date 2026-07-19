@@ -76,9 +76,9 @@ url.searchParams.set("endpoint", path.replace(/^\//, ""));
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       if (v === undefined || v === null) continue;
-     if (Array.isArray(v)) {
+   if (Array.isArray(v)) {
   for (const item of v) {
-    url.searchParams.append(`${k}[]`, String(item));
+    url.searchParams.append(k, String(item));
   }
 } else if (typeof v === "object") {
         for (const [k2, v2] of Object.entries(v as Record<string, unknown>)) {
