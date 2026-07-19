@@ -23,11 +23,11 @@ export default async function handler(req, res) {
 
     const text = await response.text();
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Content-Type",
-      response.headers.get("content-type") || "application/json"
-    );
+console.log("URL:", url.toString());
+console.log("STATUS:", response.status);
+console.log("BODY:", text);
+
+res.setHeader("Access-Control-Allow-Origin", "*");
 
     res.status(response.status).send(text);
   } catch (e) {
