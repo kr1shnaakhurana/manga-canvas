@@ -1,35 +1,43 @@
 export default async function handler(req, res) {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    return res.status(200).end();
+  }
+
   try {
-    const endpoint = req.query.endpoint || "";
+    const { endpoint = "", ...query } = req.query;
 
-    // Remove endpoint from query params
-    const params = { ...req.query };
-    delete params.endpoint;
+    const url = new URL(
+      `https://api.mangadex.org/${String(endpoint).replace(/^\/+/, "")}`
+    );
 
-    const search = new URLSearchParams(params).toString();
+    // Forward all query params except endpoint
+    Object.entries(query).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => url.searchParams.append(key, v));
+      } else if (value !== undefined) {
+        url.searchParams.append(key, String(value));
+      }
+    });
 
-    const url =
-      `https://api.mangadex.org/${endpoint}` +
-      (search ? `?${search}` : "");
-
-    const response = await fetch(url, {
+    const response = await fetch(url.toString(), {
       headers: {
+        Accept: "application/json",
         "User-Agent": "Mozilla/5.0",
       },
     });
 
-    const text = await response.text();
+    const body = await response.text();
 
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.setHeader(
-      "Content-Type",
-      response.headers.get("content-type") || "application/json"
-    );
+    res.setHeader("Content-Type", response.headers.get("content-type") || "application/json");
 
-    res.status(response.status).send(text);
+    return res.status(response.status).send(body);
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       error: err.message,
     });
   }
