@@ -1,8 +1,5 @@
 // MangaDex API client. Docs: https://api.mangadex.org/docs/
-export const MD_API =
-  typeof window !== "undefined"
-    ? "/api/mangadex"
-    : "https://api.mangadex.org";
+export const MD_API = "/api/mangadex";
 export const MD_UPLOADS = "https://uploads.mangadex.org";
 
 export type LocalizedString = Record<string, string>;
@@ -73,10 +70,7 @@ export interface MDSingle<T> {
 }
 
 async function mdFetch<T>(path: string, params?: Record<string, unknown>): Promise<T> {
-const url =
-  typeof window !== "undefined"
-    ? new URL(MD_API, window.location.origin)
-    : new URL(MD_API);
+const url = new URL(path, window.location.origin + MD_API);
 
 url.searchParams.set("endpoint", path.replace(/^\//, ""));
   if (params) {
