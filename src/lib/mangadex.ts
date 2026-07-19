@@ -70,7 +70,7 @@ export interface MDSingle<T> {
 }
 
 async function mdFetch<T>(path: string, params?: Record<string, unknown>): Promise<T> {
-const url = new URL(path, window.location.origin + MD_API);
+const url = new URL(MD_API, window.location.origin);
 
 url.searchParams.set("endpoint", path.replace(/^\//, ""));
   if (params) {
