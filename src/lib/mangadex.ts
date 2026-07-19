@@ -121,7 +121,7 @@ export function pickDescription(a: MangaAttributes): string {
 
 export function coverUrlFromManga(
   manga: Manga,
-  size: 256 | 512 | "original" = 512
+  _size: 256 | 512 | "original" = 512
 ): string | null {
   const rel = manga.relationships.find((r) => r.type === "cover_art");
   if (!rel) return null;
@@ -129,12 +129,7 @@ export function coverUrlFromManga(
   const fileName = (rel.attributes as { fileName?: string } | undefined)?.fileName;
   if (!fileName) return null;
 
-  if (size === "original") {
   return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
-}
-
-const base = fileName.replace(/\.(jpg|jpeg|png|webp)$/i, "");
-return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
 }
 
 export function findRel(
