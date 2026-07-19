@@ -134,7 +134,7 @@ export function coverUrlFromManga(
 }
 
 const base = fileName.replace(/\.(jpg|jpeg|png|webp)$/i, "");
-return `${MD_UPLOADS}/covers/${manga.id}/${base}.${size}.png`;
+return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
 }
 
 export function findRel(
