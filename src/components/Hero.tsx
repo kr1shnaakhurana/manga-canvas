@@ -131,7 +131,12 @@ export function Hero({ manga }: { manga: Manga }) {
           className="absolute right-8 top-1/2 hidden -translate-y-1/2 xl:block"
         >
           <div className="relative h-[480px] w-[320px] overflow-hidden rounded-2xl panel-border shadow-2xl shadow-black/60 animate-float">
-            <img src={cover} alt={title} className="h-full w-full object-cover" />
+            <img
+  src={cover}
+  referrerPolicy="no-referrer"
+  crossOrigin="anonymous"
+  alt={title}
+/>
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black to-transparent" />
             {/* Neon corner accents */}
             <div className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-primary/80" />
