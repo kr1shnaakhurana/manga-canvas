@@ -39,12 +39,14 @@ export function MangaCard({ manga, index = 0, size = "md" }: Props) {
         {/* Cover */}
         <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-muted shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8)]">
           {cover ? (
-          <img
-  src={cover}
-  loading="lazy"
-  referrerPolicy="no-referrer"
-  crossOrigin="anonymous"
+         <img
+  key={cover}
+  src={`${cover}?t=${Date.now()}`}
   alt={title}
+  loading="eager"
+  decoding="sync"
+  referrerPolicy="no-referrer"
+  className="h-full w-full object-cover"
 />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-card text-xs text-muted-foreground">
