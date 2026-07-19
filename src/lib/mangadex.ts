@@ -136,6 +136,7 @@ export function coverUrlFromManga(
 
 const base = fileName.replace(/\.(jpg|jpeg|png|webp)$/i, "");
 return `${MD_UPLOADS}/covers/${manga.id}/${base}.${size}.jpg`;
+}
 
 export function findRel(
   obj: { relationships: Relationship[] },
