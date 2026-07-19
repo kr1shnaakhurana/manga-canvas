@@ -113,15 +113,31 @@ export function pickDescription(a: MangaAttributes): string {
   return a.description.en || Object.values(a.description)[0] || "";
 }
 
-export function coverUrlFromManga(manga: Manga, size: 256 | 512 | "original" = 512): string | null {
+export function coverUrlFromManga(
+  manga: Manga,
+  size: 256 | 512 | "original" = 512
+): string | null {
+
+  console.log("MANGA", manga);
+  console.log("RELATIONSHIPS", manga.relationships);
+
   const rel = manga.relationships.find((r) => r.type === "cover_art");
+
+  console.log("COVER_REL", rel);
+
   if (!rel) return null;
+
   const fileName = (rel.attributes as { fileName?: string } | undefined)?.fileName;
+
+  console.log("FILENAME", fileName);
+
   if (!fileName) return null;
-  if (size === "original") return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
+
+  if (size === "original")
+    return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
+
   return `${MD_UPLOADS}/covers/${manga.id}/${fileName}.${size}.jpg`;
 }
-
 export function findRel(obj: { relationships: Relationship[] }, type: string): Relationship | undefined {
   return obj.relationships.find((r) => r.type === type);
 }
