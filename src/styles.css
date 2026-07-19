@@ -5,15 +5,16 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", "SF Pro Display", system-ui, sans-serif;
-  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-sans: "Nunito", "Inter", system-ui, sans-serif;
+  --font-display: "Bangers", "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -34,65 +35,41 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-
-  --shadow-glow: 0 0 40px oklch(0.65 0.24 15 / 0.35);
-  --shadow-card: 0 20px 60px -20px oklch(0 0 0 / 0.7);
 }
 
 :root {
   --radius: 0.875rem;
 
-  /* Deep black premium anime theme */
-  --background: oklch(0.09 0.01 280);
-  --foreground: oklch(0.98 0.005 280);
+  /* Midnight Anime Theme */
+  --background: #080810;
+  --foreground: #f0f0ff;
 
-  --card: oklch(0.13 0.015 280);
-  --card-foreground: oklch(0.98 0.005 280);
+  --card: #10101e;
+  --card-foreground: #f0f0ff;
 
-  --popover: oklch(0.13 0.015 280);
-  --popover-foreground: oklch(0.98 0.005 280);
+  --popover: #10101e;
+  --popover-foreground: #f0f0ff;
 
-  --primary: oklch(0.68 0.22 15);
-  --primary-foreground: oklch(0.99 0 0);
+  /* Neon crimson/sakura primary */
+  --primary: #ff2d55;
+  --primary-foreground: #ffffff;
 
-  --secondary: oklch(0.18 0.02 280);
-  --secondary-foreground: oklch(0.98 0.005 280);
+  --secondary: #1a1a2e;
+  --secondary-foreground: #f0f0ff;
 
-  --muted: oklch(0.16 0.015 280);
-  --muted-foreground: oklch(0.65 0.02 280);
+  --muted: #14142a;
+  --muted-foreground: #7070a0;
 
-  --accent: oklch(0.72 0.18 340);
-  --accent-foreground: oklch(0.99 0 0);
+  /* Cyan-electric accent */
+  --accent: #00e5ff;
+  --accent-foreground: #080810;
 
-  --destructive: oklch(0.62 0.24 25);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive: #ff4444;
+  --destructive-foreground: #ffffff;
 
-  --border: oklch(0.22 0.015 280 / 0.6);
-  --input: oklch(0.2 0.02 280);
-  --ring: oklch(0.68 0.22 15);
-}
-
-.dark {
-  --background: oklch(0.09 0.01 280);
-  --foreground: oklch(0.98 0.005 280);
-  --card: oklch(0.13 0.015 280);
-  --card-foreground: oklch(0.98 0.005 280);
-  --popover: oklch(0.13 0.015 280);
-  --popover-foreground: oklch(0.98 0.005 280);
-  --primary: oklch(0.68 0.22 15);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.18 0.02 280);
-  --secondary-foreground: oklch(0.98 0.005 280);
-  --muted: oklch(0.16 0.015 280);
-  --muted-foreground: oklch(0.65 0.02 280);
-  --accent: oklch(0.72 0.18 340);
-  --accent-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.62 0.24 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.22 0.015 280 / 0.6);
-  --input: oklch(0.2 0.02 280);
-  --ring: oklch(0.68 0.22 15);
+  --border: rgba(255, 45, 85, 0.15);
+  --input: #1a1a2e;
+  --ring: #ff2d55;
 }
 
 @layer base {
@@ -101,53 +78,69 @@
   }
 
   html {
-    background-color: var(--color-background);
+    background-color: var(--background);
     color-scheme: dark;
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+
+    /* Radial anime glow grid */
     background-image:
-      radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.25 0.15 15 / 0.3), transparent 60%),
-      radial-gradient(ellipse 60% 50% at 100% 100%, oklch(0.2 0.12 300 / 0.25), transparent 60%);
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 45, 85, 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 60% at 0% 60%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(120, 0, 255, 0.1) 0%, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
   }
 
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  /* Thin custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.25 0.02 280);
+    background: rgba(255, 45, 85, 0.3);
     border-radius: 999px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.35 0.05 280);
-  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 45, 85, 0.6); }
 }
 
+/* ---- Utilities ---- */
+
 @utility glass {
-  background: color-mix(in oklab, var(--card) 55%, transparent);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid color-mix(in oklab, white 6%, transparent);
+  background: rgba(16, 16, 30, 0.55);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 @utility glass-strong {
-  background: color-mix(in oklab, var(--card) 78%, transparent);
-  backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  background: rgba(16, 16, 30, 0.82);
+  backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+@utility neon-border {
+  border: 1px solid rgba(255, 45, 85, 0.4);
+  box-shadow: 0 0 12px rgba(255, 45, 85, 0.15), inset 0 0 12px rgba(255, 45, 85, 0.05);
+}
+
+@utility neon-border-cyan {
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15), inset 0 0 12px rgba(0, 229, 255, 0.05);
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, oklch(0.98 0.02 15), oklch(0.72 0.2 340));
+  background: linear-gradient(135deg, #ff2d55 0%, #ff6b8a 40%, #00e5ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-gold {
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #ff2d55 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -156,15 +149,63 @@
 @utility shimmer {
   background: linear-gradient(
     90deg,
-    oklch(0.16 0.015 280) 0%,
-    oklch(0.22 0.02 280) 50%,
-    oklch(0.16 0.015 280) 100%
+    #10101e 0%,
+    #1e1e3a 45%,
+    #10101e 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.6s ease-in-out infinite;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+@utility speed-lines {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glitch animation for text */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); clip-path: none; }
+  10% { transform: translate(-2px, 1px); }
+  20% { transform: translate(2px, -1px); }
+  30% { transform: translate(-1px, 2px); }
+  40% { transform: translate(1px, -2px); }
+  50% { transform: translate(-2px, 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-neon {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 45, 85, 0.4), 0 0 20px rgba(255, 45, 85, 0.2); }
+  50% { box-shadow: 0 0 16px rgba(255, 45, 85, 0.7), 0 0 40px rgba(255, 45, 85, 0.35); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-neon { animation: pulse-neon 2s ease-in-out infinite; }
+.animate-glitch { animation: glitch 0.3s ease-in-out; }
+
+/* Manga panel border style */
+@utility panel-border {
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    4px 4px 0 rgba(255, 45, 85, 0.2),
+    -2px -2px 0 rgba(0, 229, 255, 0.1);
+}
+
+/* Halftone dot pattern background */
+@utility halftone {
+  background-image: radial-gradient(circle, rgba(255, 45, 85, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
 }

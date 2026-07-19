@@ -1,4 +1,6 @@
 // MangaDex API client. Docs: https://api.mangadex.org/docs/
+// Calls go to /api/mangadex/... which the Vite dev proxy forwards to https://api.mangadex.org
+
 export const MD_API = "/api/mangadex";
 export const MD_UPLOADS = "https://uploads.mangadex.org";
 
@@ -69,18 +71,19 @@ export interface MDSingle<T> {
   data: T;
 }
 
-async function mdFetch<T>(path: string, params?: Record<string, unknown>): Promise<T> {
-const url = new URL(MD_API, window.location.origin);
+// ==== Core fetch — builds URL params and hits the local proxy ====
 
-url.searchParams.set("endpoint", path.replace(/^\//, ""));
+async function mdFetch<T>(path: string, params?: Record<string, unknown>): Promise<T> {
+  const url = new URL(`${MD_API}${path.startsWith("/") ? path : `/${path}`}`, window.location.origin);
+
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       if (v === undefined || v === null) continue;
-   if (Array.isArray(v)) {
+      if (Array.isArray(v)) {
   for (const item of v) {
-    url.searchParams.append(k, String(item));
+    url.searchParams.append(`${k}[]`, String(item));
   }
-} else if (typeof v === "object") {
+}else if (typeof v === "object") {
         for (const [k2, v2] of Object.entries(v as Record<string, unknown>)) {
           url.searchParams.append(`${k}[${k2}]`, String(v2));
         }
@@ -89,13 +92,16 @@ url.searchParams.set("endpoint", path.replace(/^\//, ""));
       }
     }
   }
+
   const res = await fetch(url.toString(), {
     headers: { Accept: "application/json" },
   });
+
   if (!res.ok) {
     throw new Error(`MangaDex ${res.status}: ${res.statusText}`);
   }
-  return (await res.json()) as T;
+
+  return res.json() as Promise<T>;
 }
 
 // ==== Helpers ====
@@ -117,28 +123,20 @@ export function coverUrlFromManga(
   manga: Manga,
   size: 256 | 512 | "original" = 512
 ): string | null {
-
-  console.log("MANGA", manga);
-  console.log("RELATIONSHIPS", manga.relationships);
-
   const rel = manga.relationships.find((r) => r.type === "cover_art");
-
-  console.log("COVER_REL", rel);
-
   if (!rel) return null;
 
   const fileName = (rel.attributes as { fileName?: string } | undefined)?.fileName;
-
-  console.log("FILENAME", fileName);
-
   if (!fileName) return null;
 
-  if (size === "original")
-    return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
-
+  if (size === "original") return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
   return `${MD_UPLOADS}/covers/${manga.id}/${fileName}.${size}.jpg`;
 }
-export function findRel(obj: { relationships: Relationship[] }, type: string): Relationship | undefined {
+
+export function findRel(
+  obj: { relationships: Relationship[] },
+  type: string
+): Relationship | undefined {
   return obj.relationships.find((r) => r.type === type);
 }
 
@@ -151,25 +149,27 @@ export function relName(rel: Relationship | undefined): string {
 
 const DEFAULT_INCLUDES = ["cover_art", "author", "artist"];
 
-export function searchManga(opts: {
-  title?: string;
-  limit?: number;
-  offset?: number;
-  order?: Record<string, "asc" | "desc">;
-  contentRating?: string[];
-  originalLanguage?: string[];
-  availableTranslatedLanguage?: string[];
-  publicationDemographic?: string[];
-  status?: string[];
-  year?: number;
-  includedTags?: string[];
-  ids?: string[];
-} = {}) {
+export function searchManga(
+  opts: {
+    title?: string;
+    limit?: number;
+    offset?: number;
+    order?: Record<string, "asc" | "desc">;
+    contentRating?: string[];
+    originalLanguage?: string[];
+    availableTranslatedLanguage?: string[];
+    publicationDemographic?: string[];
+    status?: string[];
+    year?: number;
+    includedTags?: string[];
+    ids?: string[];
+  } = {}
+) {
   return mdFetch<MDList<Manga>>("/manga", {
     limit: opts.limit ?? 20,
     offset: opts.offset ?? 0,
     title: opts.title,
-    "order": opts.order,
+    order: opts.order,
     contentRating: opts.contentRating ?? ["safe", "suggestive"],
     originalLanguage: opts.originalLanguage,
     availableTranslatedLanguage: opts.availableTranslatedLanguage ?? ["en"],
@@ -179,7 +179,7 @@ export function searchManga(opts: {
     includedTags: opts.includedTags,
     ids: opts.ids,
     includes: DEFAULT_INCLUDES,
-    hasAvailableChapters: true,
+    hasAvailableChapters: 1,
   });
 }
 
@@ -191,7 +191,12 @@ export function getManga(id: string) {
 
 export function getMangaChapters(
   mangaId: string,
-  opts: { limit?: number; offset?: number; translatedLanguage?: string[]; order?: Record<string, "asc" | "desc"> } = {},
+  opts: {
+    limit?: number;
+    offset?: number;
+    translatedLanguage?: string[];
+    order?: Record<string, "asc" | "desc">;
+  } = {}
 ) {
   return mdFetch<MDList<Chapter>>(`/manga/${mangaId}/feed`, {
     limit: opts.limit ?? 100,
@@ -232,45 +237,29 @@ export function getRandomManga() {
 }
 
 export function getTags() {
-  return mdFetch<MDList<{ id: string; type: "tag"; attributes: { name: LocalizedString; group: string } }>>(
-    "/manga/tag",
-  );
+  return mdFetch<
+    MDList<{ id: string; type: "tag"; attributes: { name: LocalizedString; group: string } }>
+  >("/manga/tag");
 }
 
-// Popular = highest followed manga in last 30 days
 export function getPopularManga(limit = 20) {
-  const today = new Date();
-  const past = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const past = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   return searchManga({
     limit,
     order: { followedCount: "desc" },
     availableTranslatedLanguage: ["en"],
     contentRating: ["safe", "suggestive"],
-    // Filter to manga updated in last month
-    // MangaDex accepts createdAtSince / updatedAtSince
   }).then((r) => ({ ...r, since: past.toISOString() }));
 }
 
 export function getLatestUpdates(limit = 20, offset = 0) {
-  return searchManga({
-    limit,
-    offset,
-    order: { latestUploadedChapter: "desc" },
-  });
+  return searchManga({ limit, offset, order: { latestUploadedChapter: "desc" } });
 }
 
 export function getRecentlyAdded(limit = 20, offset = 0) {
-  return searchManga({
-    limit,
-    offset,
-    order: { createdAt: "desc" },
-  });
+  return searchManga({ limit, offset, order: { createdAt: "desc" } });
 }
 
 export function getTopRated(limit = 20, offset = 0) {
-  return searchManga({
-    limit,
-    offset,
-    order: { rating: "desc" },
-  });
+  return searchManga({ limit, offset, order: { rating: "desc" } });
 }
