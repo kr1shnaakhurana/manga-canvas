@@ -118,8 +118,8 @@ export function coverUrlFromManga(manga: Manga, size: 256 | 512 | "original" = 5
   return `${MD_UPLOADS}/covers/${manga.id}/${fileName}.${size}.jpg`;
 }
 
-export function findRel(manga: Manga, type: string): Relationship | undefined {
-  return manga.relationships.find((r) => r.type === type);
+export function findRel(obj: { relationships: Relationship[] }, type: string): Relationship | undefined {
+  return obj.relationships.find((r) => r.type === type);
 }
 
 export function relName(rel: Relationship | undefined): string {
