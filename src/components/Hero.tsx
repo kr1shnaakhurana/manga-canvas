@@ -3,17 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { Play, BookOpen, Star } from "lucide-react";
 import { coverUrlFromManga, pickDescription, pickTitle, type Manga } from "@/lib/mangadex";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-
-const [url, setUrl] = useState<string>();
-
-useEffect(() => {
-  if (!cover) return;
-
-  fetch(cover)
-    .then((r) => r.blob())
-    .then((b) => setUrl(URL.createObjectURL(b)));
-}, [cover]);
 
 export function Hero({ manga }: { manga: Manga }) {
   const title = pickTitle(manga.attributes);
