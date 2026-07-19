@@ -131,11 +131,11 @@ export function coverUrlFromManga(
   if (!fileName) return null;
 
   if (size === "original") {
-    return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
-  }
-
-  return `${MD_UPLOADS}/covers/${manga.id}/${fileName}.${size}.jpg`;
+  return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
 }
+
+const base = fileName.replace(/\.(jpg|jpeg|png|webp)$/i, "");
+return `${MD_UPLOADS}/covers/${manga.id}/${base}.${size}.jpg`;
 
 export function findRel(
   obj: { relationships: Relationship[] },
