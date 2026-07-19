@@ -124,7 +124,7 @@ export function coverUrlFromManga(
   size: 256 | 512 | "original" = 512
 ): string | null {
   const rel = manga.relationships.find((r) => r.type === "cover_art");
-  console.log(rel);
+  //console.log(rel);
   if (!rel) return null;
 
   const fileName = (rel.attributes as { fileName?: string } | undefined)?.fileName;
