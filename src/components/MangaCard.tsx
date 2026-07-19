@@ -39,12 +39,14 @@ export function MangaCard({ manga, index = 0, size = "md" }: Props) {
         {/* Cover */}
         <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-muted shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8)]">
           {cover ? (
-            <img
-              src={cover}
-              alt={title}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            />
+           <img
+  src={cover}
+  alt={title}
+  loading="lazy"
+  onLoad={() => console.log("IMAGE LOADED:", cover)}
+  onError={() => console.log("IMAGE FAILED:", cover)}
+  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+/>
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-card text-xs text-muted-foreground">
               No cover
