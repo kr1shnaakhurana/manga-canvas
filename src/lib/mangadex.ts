@@ -129,7 +129,10 @@ export function coverUrlFromManga(
   const fileName = (rel.attributes as { fileName?: string } | undefined)?.fileName;
   if (!fileName) return null;
 
-  if (size === "original") return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
+  if (size === "original") {
+    return `${MD_UPLOADS}/covers/${manga.id}/${fileName}`;
+  }
+
   return `${MD_UPLOADS}/covers/${manga.id}/${fileName}.${size}.jpg`;
 }
 
