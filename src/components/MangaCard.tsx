@@ -43,8 +43,8 @@ export function MangaCard({ manga, index = 0, size = "md" }: Props) {
   src={cover}
   alt={title}
   loading="lazy"
-  //onLoad={() => console.log("IMAGE LOADED:", cover)}
- // onError={() => console.log("IMAGE FAILED:", cover)}
+  onLoad={() => console.log("IMAGE LOADED:", cover)}
+  onError={() => console.log("IMAGE FAILED:", cover)}
   className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
 />
           ) : (
