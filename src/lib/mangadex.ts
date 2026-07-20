@@ -1,7 +1,7 @@
 // MangaDex API client. Docs: https://api.mangadex.org/docs/
-// Calls go to /api/mangadex/... which the Vite dev proxy forwards to https://api.mangadex.org
+// Calls the official MangaDex REST API directly.
 
-export const MD_API = "/api/mangadex";
+export const MD_API = "https://api.mangadex.org";
 export const MD_UPLOADS = "https://uploads.mangadex.org";
 
 export type LocalizedString = Record<string, string>;
@@ -74,7 +74,7 @@ export interface MDSingle<T> {
 // ==== Core fetch — builds URL params and hits the local proxy ====
 
 async function mdFetch<T>(path: string, params?: Record<string, unknown>): Promise<T> {
-  const url = new URL(`${MD_API}${path.startsWith("/") ? path : `/${path}`}`, window.location.origin);
+  const url = new URL(`${MD_API}${path.startsWith("/") ? path : `/${path}`}`);
 
   if (params) {
     for (const [k, v] of Object.entries(params)) {
