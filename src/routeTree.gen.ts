@@ -15,6 +15,7 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReadChapterIdRouteImport } from './routes/read.$chapterId'
 import { Route as MangaIdRouteImport } from './routes/manga.$id'
+import { Route as ApiMangadexSplatRouteImport } from './routes/api/mangadex/$'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -46,6 +47,11 @@ const MangaIdRoute = MangaIdRouteImport.update({
   path: '/manga/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMangadexSplatRoute = ApiMangadexSplatRouteImport.update({
+  id: '/api/mangadex/$',
+  path: '/api/mangadex/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/manga/$id': typeof MangaIdRoute
   '/read/$chapterId': typeof ReadChapterIdRoute
+  '/api/mangadex/$': typeof ApiMangadexSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/manga/$id': typeof MangaIdRoute
   '/read/$chapterId': typeof ReadChapterIdRoute
+  '/api/mangadex/$': typeof ApiMangadexSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/manga/$id': typeof MangaIdRoute
   '/read/$chapterId': typeof ReadChapterIdRoute
+  '/api/mangadex/$': typeof ApiMangadexSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/manga/$id'
     | '/read/$chapterId'
+    | '/api/mangadex/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/manga/$id'
     | '/read/$chapterId'
+    | '/api/mangadex/$'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/manga/$id'
     | '/read/$chapterId'
+    | '/api/mangadex/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   MangaIdRoute: typeof MangaIdRoute
   ReadChapterIdRoute: typeof ReadChapterIdRoute
+  ApiMangadexSplatRoute: typeof ApiMangadexSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MangaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mangadex/$': {
+      id: '/api/mangadex/$'
+      path: '/api/mangadex/$'
+      fullPath: '/api/mangadex/$'
+      preLoaderRoute: typeof ApiMangadexSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,7 +182,18 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   MangaIdRoute: MangaIdRoute,
   ReadChapterIdRoute: ReadChapterIdRoute,
+  ApiMangadexSplatRoute: ApiMangadexSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
